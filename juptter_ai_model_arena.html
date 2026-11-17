@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juptter AI | Comparative Model Arena</title>
+    
+    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        obsidian: '#0B0E14',
+                        charcoal: '#161B26',
+                        slateBorder: '#232A3B',
+                        cobalt: '#1A4BFF',
+                        cobaltHover: '#2B59FF',
+                        periwinkle: '#5B82F6',
+                        iceBlue: '#D6E2FF',
+                    },
+                    boxShadow: {
+                        'cobalt-glow': '0 0 30px -5px rgba(26, 75, 255, 0.35)',
+                        'cobalt-border': '0 0 0 1px rgba(26, 75, 255, 0.5), 0 8px 32px rgba(26, 75, 255, 0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS for Glassmorphism, Ambient Mesh, & Sliders -->
+    <style>
+        body {
+            background-color: #0B0E14;
+            color: #FFFFFF;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 10%, rgba(26, 75, 255, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 85% 30%, rgba(91, 130, 246, 0.08) 0%, transparent 45%),
+                linear-gradient(to bottom, rgba(11, 14, 20, 0.7), #0B0E14);
+        }
+
+        /* Subtle grid pattern overlay */
+        .bg-grid-pattern {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+        }
+
+        /* Glassmorphism Panels */
+        .glass-header {
+            background: rgba(11, 14, 20, 0.78);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .glass-card {
+            background: rgba(22, 27, 38, 0.72);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Custom Range Sliders */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 6px;
+            border-radius: 999px;
+            background: #232A3B;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: #1A4BFF;
+            border: 2px solid #D6E2FF;
+            margin-top: -6px;
+            box-shadow: 0 0 12px rgba(26, 75, 255, 0.8);
+            transition: transform 0.15s ease, background-color 0.15s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            background: #3B66FF;
+        }
+
+        /* Streaming Cursor Animation */
+        .typing-cursor::after {
+            content: '▋';
+            display: inline-block;
+            color: #5B82F6;
+            animation: blink 0.8s infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0E14;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #232A3B;
+            border-radius: 999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1A4BFF;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-grid-pattern flex flex-col antialiased selection:bg-cobalt selection:text-white">
+
+    <!-- ==================== HEADER ==================== -->
+    <header class="sticky top-0 z-40 glass-header border-b border-slateBorder">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+            <!-- Brand Logo & Case Study Trigger -->
+            <div class="flex items-center gap-3 sm:gap-4">
+                <a href="#" class="flex items-center gap-2.5 group">
+                    <!-- Juptter Stylized U-Shield Emblem -->
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-b from-cobalt to-periwinkle p-[1px] shadow-cobalt-glow">
+                        <div class="w-full h-full bg-obsidian rounded-[7px] flex items-center justify-center">
+                            <svg class="w-4 h-4 text-iceBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M6 4v7a6 6 0 0 0 12 0V4" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <span class="font-display font-extrabold text-xl tracking-tight text-white">Juptter<span class="text-cobalt">.</span></span>
+                </a>
+
+                <span class="hidden md:inline-block h-4 w-[1px] bg-slateBorder"></span>
+
+                <button onclick="toggleAuditModal(true)" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-cobalt/10 text-iceBlue border border-cobalt/30 hover:bg-cobalt/20 hover:border-cobalt transition-all">
+                    <span class="w-1.5 h-1.5 rounded-full bg-cobalt animate-pulse"></span>
+                    <span>Case Study 01: Blind Spot Audit</span>
+                    <svg class="w-3.5 h-3.5 text-periwinkle" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="flex items-center gap-3">
+                <button onclick="openConnectModal()" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-charcoal text-gray-300 border border-slateBorder hover:border-cobalt/60 transition-all" title="Model server connection">
+                    <span id="status-dot" class="w-1.5 h-1.5 rounded-full bg-gray-500"></span>
+                    <span id="status-text">Not connected</span>
+                </button>
+                <button onclick="toggleAuditModal(true)" class="hidden sm:inline-flex text-xs font-medium text-gray-400 hover:text-white transition-colors px-2 py-1.5">
+                    3-Tier Rubric
+                </button>
+                <button onclick="openBookingModal()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-cobalt hover:bg-cobaltHover text-white shadow-cobalt-glow transition-all transform hover:-translate-y-0.5">
+                    <span>Book a Call</span>
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
+        
+        <!-- Hero Section -->
+        <section class="text-center max-w-3xl mx-auto space-y-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-charcoal border border-slateBorder text-[11px] font-mono uppercase tracking-wider text-periwinkle">
+                <span>RLHF & DPO Evaluation Sandbox</span>
+                <span>•</span>
+                <span class="text-iceBlue">Top 1–3% Expert Trainers</span>
+            </div>
+            <h1 class="font-display font-extrabold text-3xl sm:text-4xl lg:text-[42px] tracking-tight text-white leading-[1.15]">
+                Base Llama-3 <span class="text-gray-500 font-normal">vs.</span> <span class="bg-gradient-to-r from-white via-iceBlue to-periwinkle bg-clip-text text-transparent">Juptter Fine-Tuned Llama-3</span>
+            </h1>
+            <p class="text-sm sm:text-base text-gray-400 leading-relaxed max-w-2xl mx-auto">
+                Ask a business, financial, or operational question. Both models receive identical prompts and inference parameters—see how Juptter’s <span class="text-gray-200 font-medium">Trainer → Peer → Lead</span> human-reviewed training data changes the answer. Responses come live from both models.
+            </p>
+        </section>
+
+        <!-- Prompt & Control Command Center -->
+        <section class="glass-card rounded-2xl border border-slateBorder p-4 sm:p-6 shadow-2xl space-y-5 relative overflow-hidden">
+            <!-- Subtle top cobalt highlight -->
+            <div class="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-cobalt to-transparent opacity-80"></div>
+
+            <!-- Quick-Test Preset Chips -->
+            <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Test Categories (Pick One, Then a Prompt):</span>
+                    <span class="text-[11px] text-gray-500 hidden sm:inline">Emerging Market & Global Contexts</span>
+                </div>
+                <div id="cat-tabs" class="flex flex-wrap gap-2"></div>
+                <div id="preset-chips" class="flex flex-wrap gap-2">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+
+            <!-- Prompt Input Box -->
+            <div class="relative group">
+                <div class="absolute -inset-0.5 bg-gradient-to-r from-cobalt to-periwinkle rounded-xl opacity-0 group-focus-within:opacity-40 blur transition duration-300"></div>
+                <div class="relative bg-obsidian/90 border border-slateBorder group-focus-within:border-cobalt rounded-xl p-3.5 sm:p-4 transition-colors">
+                    <div class="flex items-center justify-between mb-2">
+                        <label for="prompt-input" class="text-xs font-semibold text-iceBlue flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-cobalt" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                            </svg>
+                            Your Prompt
+                        </label>
+                        <button onclick="clearPrompt()" class="text-xs text-gray-500 hover:text-gray-300 transition-colors">Clear</button>
+                    </div>
+                    <textarea 
+                        id="prompt-input" 
+                        rows="3" 
+                        class="w-full bg-transparent text-sm sm:text-base text-white placeholder-gray-500 focus:outline-none resize-none leading-relaxed"
+                        placeholder="Pick a prompt above, or ask a business or financial question requiring nuanced, actionable local context..."
+                    ></textarea>
+                    <div class="flex items-center justify-between pt-2 border-t border-slateBorder/50 text-[11px] text-gray-500 font-mono">
+                        <span id="char-count">0 chars</span>
+                        <span>Press <kbd class="px-1.5 py-0.5 bg-charcoal border border-slateBorder rounded text-gray-300">Ctrl + Enter</kbd> to compare</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Parameter Sliders & Action CTA -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center pt-1">
+                <!-- Max New Tokens Slider -->
+                <div class="lg:col-span-4 bg-obsidian/60 border border-slateBorder rounded-xl p-3.5 space-y-2">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="text-gray-300 font-medium">Max new tokens</span>
+                        <span id="tokens-val" class="font-mono font-semibold text-iceBlue bg-cobalt/15 border border-cobalt/30 px-2 py-0.5 rounded">600</span>
+                    </div>
+                    <input id="tokens-slider" type="range" min="64" max="700" value="600" class="w-full">
+                    <div class="flex justify-between text-[10px] font-mono text-gray-500">
+                        <span>64</span>
+                        <span>700</span>
+                    </div>
+                </div>
+
+                <!-- Temperature Slider -->
+                <div class="lg:col-span-4 bg-obsidian/60 border border-slateBorder rounded-xl p-3.5 space-y-2">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="text-gray-300 font-medium">Temperature</span>
+                        <span id="temp-val" class="font-mono font-semibold text-iceBlue bg-cobalt/15 border border-cobalt/30 px-2 py-0.5 rounded">0.3</span>
+                    </div>
+                    <input id="temp-slider" type="range" min="0" max="1" step="0.1" value="0.3" class="w-full">
+                    <div class="flex justify-between text-[10px] font-mono text-gray-500">
+                        <span>0.0 (Deterministic)</span>
+                        <span>1.0 (Creative)</span>
+                    </div>
+                </div>
+
+                <!-- Run Comparative Analysis Button -->
+                <div class="lg:col-span-4">
+                    <button 
+                        id="compare-btn"
+                        onclick="runComparison()" 
+                        class="w-full h-full min-h-[58px] rounded-xl bg-cobalt hover:bg-cobaltHover active:scale-[0.99] text-white font-display font-bold text-sm sm:text-base shadow-cobalt-glow transition-all flex items-center justify-center gap-2.5 px-6 cursor-pointer"
+                    >
+                        <svg id="compare-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <span id="compare-btn-text">Run Comparative Analysis</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== COMPARISON ARENA (50/50 SPLIT) ==================== -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+            
+            <!-- LEFT CARD: BASE LLAMA-3 8B INSTRUCT -->
+            <div class="glass-card rounded-2xl border border-slateBorder flex flex-col justify-between overflow-hidden transition-all">
+                <div>
+                    <!-- Card Header -->
+                    <div class="px-5 py-4 border-b border-slateBorder bg-obsidian/50 flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-2.5 h-2.5 rounded-full bg-gray-500"></div>
+                            <h2 class="font-display font-bold text-base text-gray-200">Base Llama-3 8B Instruct</h2>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span id="base-flaw-badge" class="px-2.5 py-1 rounded-full text-[11px] font-medium bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                                Untuned
+                            </span>
+                            <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-charcoal text-gray-400 border border-slateBorder">
+                                Public Weights
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Output Body -->
+                    <div class="p-5 sm:p-6 min-h-[290px] text-sm text-gray-300 leading-relaxed space-y-3" id="base-output">
+                        <!-- Initial Rendered Content -->
+                    </div>
+                </div>
+
+                <!-- Card Footer -->
+                <div class="px-5 py-3 border-t border-slateBorder bg-obsidian/40 flex items-center justify-between text-xs text-gray-500 font-mono">
+                    <div class="flex items-center gap-3">
+                        <span id="base-latency">—</span>
+                        <span>•</span>
+                        <span id="base-tokens">—</span>
+                    </div>
+                    <button onclick="copyResponse('base')" class="inline-flex items-center gap-1.5 text-gray-400 hover:text-white transition-colors py-1 px-2 rounded hover:bg-charcoal">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        <span id="base-copy-label">Copy</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- RIGHT CARD: FINE-TUNED (JUPTTER) -->
+            <div class="glass-card rounded-2xl border border-cobalt/60 shadow-cobalt-border flex flex-col justify-between overflow-hidden relative transition-all">
+                <!-- Top Cobalt Accent Bar -->
+                <div class="h-1 w-full bg-gradient-to-r from-cobalt via-periwinkle to-iceBlue"></div>
+
+                <div>
+                    <!-- Card Header -->
+                    <div class="px-5 py-4 border-b border-slateBorder bg-cobalt/[0.06] flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center gap-2.5">
+                            <span class="relative flex h-2.5 w-2.5">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cobalt opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-cobalt"></span>
+                            </span>
+                            <h2 class="font-display font-bold text-base text-white">Fine-tuned (Juptter)</h2>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-cobalt/20 text-iceBlue border border-cobalt/40">
+                                <svg class="w-3 h-3 text-periwinkle" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                </svg>
+                                Fine-tuned • SFT Adapter
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Output Body -->
+                    <div class="p-5 sm:p-6 min-h-[290px] text-sm text-gray-100 leading-relaxed space-y-3" id="juptter-output">
+                        <!-- Initial Rendered Content -->
+                    </div>
+                </div>
+
+                <!-- Expandable "Why This Answer Wins" Rubric Breakdown -->
+                <div class="border-t border-slateBorder/80 bg-obsidian/60">
+                    <button 
+                        onclick="toggleRubricDrawer()" 
+                        class="w-full px-5 py-2.5 flex items-center justify-between text-xs font-semibold text-iceBlue hover:bg-cobalt/10 transition-colors"
+                    >
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-cobalt" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Measured Stats (This Run)
+                        </span>
+                        <svg id="rubric-chevron" class="w-4 h-4 text-periwinkle transform transition-transform duration-200 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div id="rubric-details" class="px-5 pb-4 pt-1 text-xs text-gray-300 space-y-2 border-t border-slateBorder/40">
+                        <!-- Populated dynamically per prompt -->
+                    </div>
+                </div>
+
+                <!-- Card Footer -->
+                <div class="px-5 py-3 border-t border-slateBorder bg-obsidian/80 flex items-center justify-between text-xs text-gray-400 font-mono">
+                    <div class="flex items-center gap-3">
+                        <span id="juptter-latency" class="text-iceBlue">—</span>
+                        <span>•</span>
+                        <span id="juptter-tokens">—</span>
+                    </div>
+                    <button onclick="copyResponse('juptter')" class="inline-flex items-center gap-1.5 text-iceBlue hover:text-white transition-colors py-1 px-2 rounded hover:bg-cobalt/20">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        <span id="juptter-copy-label">Copy</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="border-t border-slateBorder/80 py-6 px-4 sm:px-6 lg:px-8 mt-12">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
+            <div class="flex items-center gap-2">
+                <span class="font-display font-bold text-gray-300">Juptter AI</span>
+                <span>•</span>
+                <span>Expert Human Trainers for RLHF, DPO & Model Audits</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleAuditModal(true)" class="hover:text-iceBlue transition-colors">Case Study 01 Metrics</button>
+                <span>•</span>
+                <button onclick="openBookingModal('access')" class="text-periwinkle hover:text-white transition-colors">Request Training Sheets →</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== CASE STUDY 01 AUDIT MODAL ==================== -->
+    <div id="audit-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+        <div class="glass-card border border-slateBorder rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl space-y-6 relative">
+            <button onclick="toggleAuditModal(false)" class="absolute top-5 right-5 text-gray-400 hover:text-white p-1.5 rounded-lg bg-obsidian border border-slateBorder">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <div class="space-y-2">
+                <span class="text-xs font-mono uppercase tracking-wider text-periwinkle">Case Study 01 • Blind Spot Audit</span>
+                <h3 class="font-display font-extrabold text-2xl text-white">Why Public Preference Data Fails at Scale</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">
+                    We audited 200 answers that a public preference dataset marked as its "best" response across 12 topics (banking, personal finance, investing, insurance, tax, and careers).
+                </p>
+            </div>
+
+            <!-- 4 Key Metrics Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div class="bg-obsidian/80 border border-slateBorder rounded-xl p-3.5">
+                    <div class="font-display font-extrabold text-2xl text-cobalt">95%</div>
+                    <div class="text-[11px] text-gray-400 mt-1">Of "Best" Answers Had a Real Flaw</div>
+                </div>
+                <div class="bg-obsidian/80 border border-slateBorder rounded-xl p-3.5">
+                    <div class="font-display font-extrabold text-2xl text-white">200</div>
+                    <div class="text-[11px] text-gray-400 mt-1">Answers Audited Across 12 Topics</div>
+                </div>
+                <div class="bg-obsidian/80 border border-slateBorder rounded-xl p-3.5">
+                    <div class="font-display font-extrabold text-2xl text-iceBlue">75%</div>
+                    <div class="text-[11px] text-gray-400 mt-1">Of Cultural Flaws Rated High Severity</div>
+                </div>
+                <div class="bg-obsidian/80 border border-slateBorder rounded-xl p-3.5">
+                    <div class="font-display font-extrabold text-2xl text-periwinkle">29%</div>
+                    <div class="text-[11px] text-gray-400 mt-1">Final Category Changed After Review</div>
+                </div>
+            </div>
+
+            <!-- 3-Tier Venn Visual -->
+            <div class="bg-obsidian/70 border border-slateBorder rounded-xl p-5 space-y-4">
+                <div class="text-xs font-semibold uppercase tracking-wider text-gray-300">Juptter 3-Tier Quality Pipeline (Top 1–3% of Applicants)</div>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-0">
+                    <div class="w-full sm:w-44 h-24 sm:h-32 rounded-2xl sm:rounded-full bg-cobalt flex flex-col items-center justify-center text-center p-3 shadow-cobalt-glow z-10">
+                        <span class="font-display font-bold text-sm text-white">1. Trainer</span>
+                        <span class="text-[11px] text-iceBlue/90 mt-0.5">Flags blind spot & writes fix</span>
+                    </div>
+                    <div class="w-full sm:w-44 h-24 sm:h-32 rounded-2xl sm:rounded-full bg-periwinkle sm:-ml-6 flex flex-col items-center justify-center text-center p-3 z-20">
+                        <span class="font-display font-bold text-sm text-white">2. Peer</span>
+                        <span class="text-[11px] text-white/90 mt-0.5">Independent blind verification</span>
+                    </div>
+                    <div class="w-full sm:w-44 h-24 sm:h-32 rounded-2xl sm:rounded-full bg-iceBlue sm:-ml-6 flex flex-col items-center justify-center text-center p-3 z-30">
+                        <span class="font-display font-bold text-sm text-obsidian">3. Lead</span>
+                        <span class="text-[11px] text-obsidian/80 mt-0.5">Final rubric sign-off</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-end gap-3 pt-2">
+                <button onclick="toggleAuditModal(false)" class="w-full sm:w-auto px-4 py-2 rounded-xl text-xs font-semibold border border-slateBorder text-gray-300 hover:text-white">
+                    Back to Model Arena
+                </button>
+                <button onclick="toggleAuditModal(false); openBookingModal('audit');" class="w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-semibold bg-cobalt hover:bg-cobaltHover text-white shadow-cobalt-glow">
+                    Audit Your Dataset With Juptter →
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== CONNECT MODAL ==================== -->
+    <div id="connect-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+        <div class="glass-card border border-slateBorder rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 relative">
+            <button onclick="toggleModal('connect-modal', false)" class="absolute top-4 right-4 text-gray-400 hover:text-white p-1.5 rounded-lg bg-obsidian border border-slateBorder" aria-label="Close">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            <div class="space-y-1.5">
+                <span class="text-xs font-mono text-periwinkle">Model server</span>
+                <h3 class="font-display font-bold text-xl text-white">Connect to the live models</h3>
+                <p class="text-xs text-gray-400 leading-relaxed">Run <span class="font-mono text-gray-300">serve_api.py --tunnel</span> in Colab, then paste the <span class="font-mono text-gray-300">trycloudflare.com</span> address it prints. The address changes every session.</p>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label for="api-url" class="block text-xs font-medium text-gray-300 mb-1">Server address</label>
+                    <input id="api-url" type="url" placeholder="https://something.trycloudflare.com" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian border border-slateBorder text-sm text-white focus:outline-none focus:border-cobalt font-mono">
+                </div>
+                <div>
+                    <label for="api-key" class="block text-xs font-medium text-gray-300 mb-1">Access key</label>
+                    <input id="api-key" type="password" placeholder="the --key you started the server with" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian border border-slateBorder text-sm text-white focus:outline-none focus:border-cobalt font-mono">
+                </div>
+                <p class="text-[11px] text-gray-500">Saved in this browser only. Anyone who can open this page's source can see a key that is hard-coded in it, so use a throw-away key.</p>
+                <button onclick="saveConnection()" class="w-full py-2.5 rounded-xl bg-cobalt hover:bg-cobaltHover text-white font-semibold text-sm shadow-cobalt-glow transition-all">Connect</button>
+                <div id="connect-feedback" class="hidden text-xs rounded-xl p-3 text-center"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CONTACT MODAL (book a call / sheet access / dataset audit) ==================== -->
+    <div id="booking-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+        <div class="glass-card border border-slateBorder rounded-2xl max-w-md w-full max-h-[92vh] overflow-y-auto p-6 shadow-2xl space-y-5 relative">
+            <button onclick="closeBookingModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white p-1.5 rounded-lg bg-obsidian border border-slateBorder" aria-label="Close">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            <div class="space-y-1.5">
+                <span class="text-xs font-mono text-periwinkle">Juptter AI Partnership</span>
+                <h3 class="font-display font-bold text-xl text-white">Let’s Build Better Training Data</h3>
+                <p class="text-xs text-gray-400">Book a walkthrough, request access to the trainer audit sheets, or ask us to audit a sample of your own dataset.</p>
+            </div>
+            <div id="book-direct" class="hidden">
+                <a id="book-link" href="#" target="_blank" rel="noopener" class="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-cobalt hover:bg-cobaltHover text-white font-semibold text-sm shadow-cobalt-glow transition-all">Pick a time on the calendar →</a>
+                <div class="text-center text-[11px] text-gray-500 mt-3">or send a request below</div>
+            </div>
+            <form onsubmit="submitBookingForm(event)" class="space-y-3.5">
+                <div>
+                    <label for="bk-name" class="block text-xs font-medium text-gray-300 mb-1">Name</label>
+                    <input id="bk-name" type="text" required placeholder="Your name" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian border border-slateBorder text-sm text-white focus:outline-none focus:border-cobalt">
+                </div>
+                <div>
+                    <label for="bk-email" class="block text-xs font-medium text-gray-300 mb-1">Work Email</label>
+                    <input id="bk-email" type="email" required placeholder="alex@ai-company.com" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian border border-slateBorder text-sm text-white focus:outline-none focus:border-cobalt">
+                </div>
+                <div>
+                    <label for="bk-focus" class="block text-xs font-medium text-gray-300 mb-1">What do you need?</label>
+                    <select id="bk-focus" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian border border-slateBorder text-sm text-white focus:outline-none focus:border-cobalt">
+                        <option value="call">Book a call / technical walkthrough</option>
+                        <option value="access">Request access to the trainer sheets (Track 2)</option>
+                        <option value="audit">Audit a sample of my dataset</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="bk-note" class="block text-xs font-medium text-gray-300 mb-1">Anything we should know? <span class="text-gray-500">(optional)</span></label>
+                    <textarea id="bk-note" rows="3" placeholder="Dataset size, format, domain, timeline…" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian border border-slateBorder text-sm text-white focus:outline-none focus:border-cobalt resize-none"></textarea>
+                </div>
+                <button id="bk-submit" type="submit" class="w-full py-2.5 rounded-xl bg-cobalt hover:bg-cobaltHover text-white font-semibold text-sm shadow-cobalt-glow transition-all">Send request</button>
+            </form>
+            <div id="booking-feedback" class="hidden text-xs rounded-xl p-3 text-center"></div>
+            <p class="text-[11px] text-gray-500">Sheet access is granted case by case. Trainer sheets are client work product and are shared on request, not publicly.</p>
+        </div>
+    </div>
+
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+    <script>
+        // ---------- CONFIG: fill these in before publishing ----------
+        const CONFIG = {
+            API_URL: "",        // optional default server address (changes each Colab session, so usually left blank)
+            API_KEY: "",        // optional default key (visible to anyone who views source)
+            BOOKING_URL: "",    // e.g. your Calendly / Cal.com / Google Calendar booking link
+            CONTACT_EMAIL: "",  // fallback: requests open a pre-filled email to this address
+            FORM_ENDPOINT: ""   // optional: Formspree / Google Apps Script URL that accepts a JSON POST
+        };
+        // Real answers you captured from the live models, shown when the server is offline.
+        // Each: { prompt, base, tuned, base_seconds, tuned_seconds, note }
+        const SAVED_SAMPLES = [];
+
+        // ---------- Prompt categories ----------
+        // Prompts are written fresh for this demo. Check them against the training sheets so none is a training pair.
+        const CATEGORIES = [
+            { id: 'case1', label: 'Case 01 audit prompts', prompts: [
+                { label: 'Payday loan interest', text: "How much interest do payday loans charge?" },
+                { label: 'Apple profitability & investing', text: "I'm looking to invest some money in the stock market. Is Apple a profitable company and how can I invest?" },
+                { label: 'Homeowners weather insurance', text: "I wonder if I should get homeowners insurance. Would you happen to know which weather events or situations are reasons to acquire homeowners insurance?" }
+            ]},
+            { id: 'sme', label: 'Small business', prompts: [
+                { label: 'Naira cost squeeze', text: "I run a small bakery in Ibadan. Flour and sugar prices keep rising every month. How should I adjust my prices and costs without losing my regular customers?" },
+                { label: 'Supplier credit', text: "A supplier is offering me 60 days credit but with a 4% price markup. Should I take it or pay cash from my working capital?" },
+                { label: 'Cash-flow gaps', text: "My shop sells well but I am always short of cash at month end. What should I check first?" }
+            ]},
+            { id: 'money', label: 'Personal finance', prompts: [
+                { label: 'Saving in an inflation economy', text: "I earn a salary in naira and want to save for a house in 5 years while prices keep rising. Where should I keep the money?" },
+                { label: 'Cooperative vs. bank loan', text: "I need a 500,000 naira loan. Is it better to borrow from my cooperative society or from a bank? What should I compare?" },
+                { label: 'Side income and tax', text: "I started freelancing alongside my job. Do I need to register or pay tax on that income?" }
+            ]},
+            { id: 'cross', label: 'Cross-border', prompts: [
+                { label: 'Paid in USD, living in Nigeria', text: "A client abroad wants to pay me in dollars. What are my options for receiving the money and what should I watch out for?" },
+                { label: 'Sending money abroad', text: "I need to pay a tuition fee in pounds from Nigeria. What is the cheapest and safest way to do it?" }
+            ]},
+            { id: 'ins', label: 'Insurance & risk', prompts: [
+                { label: 'Shop fire cover', text: "Do I need fire insurance for my provision store, and what should I check in the policy before I buy?" },
+                { label: 'Motor insurance', text: "What is the difference between third-party and comprehensive car insurance, and which is worth it for an older car?" }
+            ]}
+        ];
+        let activeCat = CATEGORIES[0].id;
+        let activeChip = null;
+
+        // ---------- Elements ----------
+        const $ = id => document.getElementById(id);
+        const promptInput = $('prompt-input'), tokensSlider = $('tokens-slider'), tempSlider = $('temp-slider');
+        const tokensVal = $('tokens-val'), tempVal = $('temp-val');
+        const baseOutput = $('base-output'), juptterOutput = $('juptter-output'), rubricDetails = $('rubric-details');
+        const compareBtn = $('compare-btn'), compareBtnText = $('compare-btn-text');
+
+        // ---------- Connection state ----------
+        let conn = { url: CONFIG.API_URL, key: CONFIG.API_KEY, ok: false };
+        try {
+            const s = JSON.parse(localStorage.getItem('juptter_conn') || 'null');
+            if (s && s.url) conn = { url: s.url, key: s.key || '', ok: false };
+        } catch (e) {}
+        const apiBase = () => (conn.url || '').trim().replace(/\/+$/, '');
+
+        function setStatus(state, text) {
+            const dot = $('status-dot'), label = $('status-text');
+            const colors = { on: 'bg-emerald-400', off: 'bg-gray-500', wait: 'bg-amber-400 animate-pulse', err: 'bg-red-400' };
+            dot.className = 'w-1.5 h-1.5 rounded-full ' + (colors[state] || colors.off);
+            label.textContent = text;
+        }
+        async function checkHealth() {
+            if (!apiBase()) { conn.ok = false; setStatus('off', 'Not connected'); return false; }
+            setStatus('wait', 'Connecting…');
+            try {
+                const r = await fetch(apiBase() + '/health', { headers: { 'x-api-key': conn.key || '' } });
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                conn.ok = true; setStatus('on', 'Live models'); return true;
+            } catch (e) { conn.ok = false; setStatus('err', 'Server unreachable'); return false; }
+        }
+        function showFeedback(id, kind, msg) {
+            const el = $(id);
+            el.className = 'text-xs rounded-xl p-3 text-center ' + (kind === 'ok'
+                ? 'text-emerald-300 bg-emerald-500/10 border border-emerald-500/30'
+                : kind === 'warn' ? 'text-amber-300 bg-amber-500/10 border border-amber-500/30'
+                : 'text-red-300 bg-red-500/10 border border-red-500/30');
+            el.textContent = msg;
+        }
+        async function saveConnection() {
+            conn.url = $('api-url').value.trim(); conn.key = $('api-key').value.trim();
+            try { localStorage.setItem('juptter_conn', JSON.stringify({ url: conn.url, key: conn.key })); } catch (e) {}
+            const ok = await checkHealth();
+            showFeedback('connect-feedback', ok ? 'ok' : 'err', ok ? 'Connected. Both models are ready.' : 'Could not reach the server. Check the address, the key, and that the Colab cell is still running.');
+            if (ok) setTimeout(() => toggleModal('connect-modal', false), 900);
+        }
+
+        // ---------- Rendering ----------
+        const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        function inline(s) {
+            return esc(s).replace(/\*\*(.+?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>')
+                         .replace(/`([^`]+)`/g, '<code class="font-mono text-iceBlue bg-charcoal px-1 rounded">$1</code>');
+        }
+        function renderMarkdown(text) {
+            const lines = String(text).replace(/\r/g, '').split('\n');
+            let html = '', list = null, para = [];
+            const flushPara = () => { if (para.length) { html += '<p>' + para.map(inline).join('<br>') + '</p>'; para = []; } };
+            const flushList = () => { if (list) { html += '<' + list.t + ' class="' + (list.t === 'ol' ? 'list-decimal' : 'list-disc') + ' pl-5 space-y-1.5">' + list.items.map(i => '<li>' + inline(i) + '</li>').join('') + '</' + list.t + '>'; list = null; } };
+            for (const raw of lines) {
+                const line = raw.trimEnd(); let m;
+                if (!line.trim()) { flushPara(); flushList(); continue; }
+                if ((m = line.match(/^\s*(\d+)[.)]\s+(.*)$/))) { flushPara(); if (!list || list.t !== 'ol') { flushList(); list = { t: 'ol', items: [] }; } list.items.push(m[2]); continue; }
+                if ((m = line.match(/^\s*[-*•]\s+(.*)$/))) { flushPara(); if (!list || list.t !== 'ul') { flushList(); list = { t: 'ul', items: [] }; } list.items.push(m[1]); continue; }
+                if ((m = line.match(/^#{1,4}\s+(.*)$/))) { flushPara(); flushList(); html += '<p class="font-semibold text-white">' + inline(m[1]) + '</p>'; continue; }
+                flushList(); para.push(line);
+            }
+            flushPara(); flushList();
+            return html;
+        }
+        const raw = { base: '', juptter: '' };
+
+        function placeholder(msg, cls) { return '<p class="' + (cls || 'text-gray-500') + '">' + msg + '</p>'; }
+        function skeleton() {
+            return '<div class="animate-pulse space-y-3"><div class="h-3 rounded bg-slateBorder w-11/12"></div><div class="h-3 rounded bg-slateBorder w-full"></div><div class="h-3 rounded bg-slateBorder w-9/12"></div><div class="h-3 rounded bg-slateBorder w-10/12"></div><div class="h-3 rounded bg-slateBorder w-6/12"></div></div>';
+        }
+        function stats(text) {
+            const words = (text.trim().match(/\S+/g) || []).length;
+            const items = (text.match(/^\s*(?:\d+[.)]|[-*•])\s+/gm) || []).length;
+            return { chars: text.length, words, items };
+        }
+        function renderResult(d, note) {
+            raw.base = d.base || ''; raw.juptter = d.tuned || '';
+            baseOutput.innerHTML = renderMarkdown(raw.base);
+            juptterOutput.innerHTML = renderMarkdown(raw.juptter);
+            const b = stats(raw.base), t = stats(raw.juptter);
+            const fmtS = v => (typeof v === 'number' ? v.toFixed(1) + 's' : '—');
+            $('base-latency').textContent = fmtS(d.base_seconds); $('juptter-latency').textContent = fmtS(d.tuned_seconds);
+            $('base-tokens').textContent = b.words + ' words'; $('juptter-tokens').textContent = t.words + ' words';
+            const ratio = b.chars ? Math.round((t.chars / b.chars) * 100) : null;
+            const row = (k, x, y) => '<div class="flex items-center justify-between gap-3"><span class="text-gray-400">' + k + '</span><span class="font-mono text-gray-300">' + x + ' <span class="text-gray-600">vs</span> <span class="text-iceBlue">' + y + '</span></span></div>';
+            rubricDetails.innerHTML =
+                '<div class="text-[11px] text-gray-500 pb-1">Measured on this run (base vs. fine-tuned)</div>' +
+                row('Characters', b.chars, t.chars) + row('Words', b.words, t.words) + row('List items', b.items, t.items) +
+                (ratio !== null ? '<div class="pt-1 text-gray-300">Fine-tuned answer is <span class="text-iceBlue font-semibold">' + ratio + '%</span> of the base length.</div>' : '') +
+                '<div class="pt-2 text-[11px] text-gray-500 leading-relaxed">' + (note || 'These numbers measure length and structure only. Whether an answer is better is decided by blind human review, not by this panel.') + '</div>';
+            if (!$('rubric-details').dataset.opened) toggleRubricDrawer(true);
+        }
+
+        // ---------- Categories & chips ----------
+        function renderCategories() {
+            $('cat-tabs').innerHTML = CATEGORIES.map(c => {
+                const on = c.id === activeCat;
+                return '<button onclick="setCategory(\'' + c.id + '\')" class="px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ' +
+                    (on ? 'bg-cobalt text-white border-cobalt shadow-cobalt-glow' : 'bg-obsidian/70 text-gray-400 border-slateBorder hover:text-white hover:border-cobalt/50') + '">' + c.label + '</button>';
+            }).join('');
+            const cat = CATEGORIES.find(c => c.id === activeCat);
+            $('preset-chips').innerHTML = cat.prompts.map((p, i) => {
+                const on = activeChip === activeCat + ':' + i;
+                return '<button onclick="loadPrompt(\'' + activeCat + '\',' + i + ')" class="px-3 py-1.5 rounded-full text-xs border transition-all text-left ' +
+                    (on ? 'bg-cobalt/20 text-iceBlue border-cobalt' : 'bg-charcoal text-gray-300 border-slateBorder hover:border-cobalt/60 hover:text-white') + '">' + p.label + '</button>';
+            }).join('');
+        }
+        function setCategory(id) { activeCat = id; renderCategories(); }
+        function loadPrompt(cat, i) {
+            activeChip = cat + ':' + i;
+            promptInput.value = CATEGORIES.find(c => c.id === cat).prompts[i].text;
+            updateCharCount(); renderCategories(); promptInput.focus();
+        }
+        function updateCharCount() { $('char-count').textContent = promptInput.value.length + ' chars'; }
+        function clearPrompt() { promptInput.value = ''; activeChip = null; updateCharCount(); renderCategories(); promptInput.focus(); }
+
+        // ---------- Run comparison ----------
+        let running = false;
+        function setRunning(on) {
+            running = on; compareBtn.disabled = on;
+            compareBtn.classList.toggle('opacity-60', on); compareBtn.classList.toggle('cursor-wait', on);
+            compareBtnText.textContent = on ? 'Running both models…' : 'Run Comparative Analysis';
+        }
+        function offlineMessage(extra) {
+            const html = placeholder(extra || 'Not connected to the model server.', 'text-amber-300') +
+                '<p class="text-gray-500 text-xs mt-2">Click “Not connected” at the top to paste the server address from Colab.</p>';
+            baseOutput.innerHTML = html; juptterOutput.innerHTML = html;
+        }
+        async function runComparison() {
+            if (running) return;
+            const prompt = promptInput.value.trim();
+            if (prompt.length < 4) { baseOutput.innerHTML = placeholder('Type a prompt first (at least a few words).'); juptterOutput.innerHTML = baseOutput.innerHTML; return; }
+            const saved = SAVED_SAMPLES.find(s => s.prompt.trim() === prompt);
+            if (!apiBase()) {
+                if (saved) { renderResult(saved, 'Saved answer from a previous live run. Connect the server to run new prompts.'); return; }
+                offlineMessage('Not connected to the model server, and this prompt has no saved answer.'); return;
+            }
+            setRunning(true);
+            baseOutput.innerHTML = skeleton(); juptterOutput.innerHTML = skeleton();
+            $('base-latency').textContent = $('juptter-latency').textContent = '…';
+            $('base-tokens').textContent = $('juptter-tokens').textContent = '…';
+            const ctl = new AbortController(); const timer = setTimeout(() => ctl.abort(), 240000);
+            try {
+                const r = await fetch(apiBase() + '/compare', {
+                    method: 'POST', signal: ctl.signal,
+                    headers: { 'Content-Type': 'application/json', 'x-api-key': conn.key || '' },
+                    body: JSON.stringify({ prompt, max_new_tokens: parseInt(tokensSlider.value, 10), temperature: parseFloat(tempSlider.value) })
+                });
+                if (r.status === 401 || r.status === 403) throw new Error('The access key was rejected.');
+                if (!r.ok) throw new Error('The server returned HTTP ' + r.status + '.');
+                const d = await r.json();
+                if (typeof d.base !== 'string' || typeof d.tuned !== 'string') throw new Error('Unexpected response from the server.');
+                conn.ok = true; setStatus('on', 'Live models');
+                renderResult(d);
+            } catch (e) {
+                const msg = e.name === 'AbortError' ? 'The server took too long (over 4 minutes).' : (e.message || 'Request failed.');
+                setStatus('err', 'Server unreachable');
+                if (saved) renderResult(saved, 'Live server failed (' + msg + '). Showing a saved answer from a previous live run.');
+                else offlineMessage(msg + ' Check that the Colab cell is still running, then reconnect.');
+                $('base-latency').textContent = $('juptter-latency').textContent = '—';
+                $('base-tokens').textContent = $('juptter-tokens').textContent = '—';
+            } finally { clearTimeout(timer); setRunning(false); }
+        }
+
+        // ---------- Drawer, copy ----------
+        function toggleRubricDrawer(forceOpen) {
+            const el = rubricDetails, chev = $('rubric-chevron');
+            el.dataset.opened = '1';
+            const hide = forceOpen === true ? false : !el.classList.contains('hidden');
+            el.classList.toggle('hidden', hide);
+            chev.classList.toggle('rotate-180', !hide);
+        }
+        function copyResponse(which) {
+            const text = raw[which] || ''; const label = $(which + '-copy-label');
+            if (!text) return;
+            const done = ok => { label.textContent = ok ? 'Copied!' : 'Failed'; setTimeout(() => { label.textContent = 'Copy'; }, 1800); };
+            if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => done(true), () => done(false));
+            else { const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); done(true); } catch (e) { done(false); } document.body.removeChild(t); }
+        }
+
+        // ---------- Modals ----------
+        function toggleModal(id, show) { const m = $(id); m.classList.toggle('hidden', !show); m.classList.toggle('flex', show); }
+        function toggleAuditModal(show) { toggleModal('audit-modal', show); }
+        function openConnectModal() { $('api-url').value = conn.url || ''; $('api-key').value = conn.key || ''; $('connect-feedback').className = 'hidden'; toggleModal('connect-modal', true); }
+        function openBookingModal(focus) {
+            $('bk-focus').value = focus || 'call';
+            $('booking-feedback').className = 'hidden';
+            $('book-direct').classList.toggle('hidden', !CONFIG.BOOKING_URL);
+            if (CONFIG.BOOKING_URL) $('book-link').href = CONFIG.BOOKING_URL;
+            $('bk-submit').disabled = false; toggleModal('booking-modal', true);
+        }
+        function closeBookingModal() { toggleModal('booking-modal', false); }
+        async function submitBookingForm(e) {
+            e.preventDefault();
+            const focusLabels = { call: 'Book a call / technical walkthrough', access: 'Access to trainer sheets (Track 2)', audit: 'Dataset audit sample' };
+            const data = { name: $('bk-name').value.trim(), email: $('bk-email').value.trim(), request: focusLabels[$('bk-focus').value], note: $('bk-note').value.trim(), source: 'Juptter Model Arena' };
+            if (CONFIG.FORM_ENDPOINT) {
+                $('bk-submit').disabled = true;
+                try {
+                    const r = await fetch(CONFIG.FORM_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(data) });
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    showFeedback('booking-feedback', 'ok', 'Request received. We will reply to ' + data.email + '.');
+                    setTimeout(closeBookingModal, 2600);
+                } catch (err) {
+                    $('bk-submit').disabled = false;
+                    showFeedback('booking-feedback', 'err', 'Could not send the request. Please try again' + (CONFIG.CONTACT_EMAIL ? ' or email ' + CONFIG.CONTACT_EMAIL + '.' : '.'));
+                }
+            } else if (CONFIG.CONTACT_EMAIL) {
+                const body = 'Name: ' + data.name + '\nEmail: ' + data.email + '\nRequest: ' + data.request + '\n\n' + data.note;
+                window.location.href = 'mailto:' + CONFIG.CONTACT_EMAIL + '?subject=' + encodeURIComponent('Juptter: ' + data.request) + '&body=' + encodeURIComponent(body);
+                showFeedback('booking-feedback', 'warn', 'Your email app should open with the request filled in. Press send there to finish.');
+            } else {
+                showFeedback('booking-feedback', 'warn', 'Requests are not switched on for this page yet, so nothing was sent.');
+            }
+        }
+
+        // ---------- Events ----------
+        promptInput.addEventListener('input', () => { updateCharCount(); activeChip = null; renderCategories(); });
+        promptInput.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') runComparison(); });
+        tokensSlider.addEventListener('input', e => { tokensVal.textContent = e.target.value; });
+        tempSlider.addEventListener('input', e => { tempVal.textContent = parseFloat(e.target.value).toFixed(1); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') ['audit-modal', 'connect-modal', 'booking-modal'].forEach(id => toggleModal(id, false)); });
+        ['audit-modal', 'connect-modal', 'booking-modal'].forEach(id => $(id).addEventListener('click', e => { if (e.target.id === id) toggleModal(id, false); }));
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderCategories(); updateCharCount();
+            const empty = placeholder('Pick a prompt above or type your own, then press “Run Comparative Analysis”. The answer from the base model appears here.');
+            baseOutput.innerHTML = empty;
+            juptterOutput.innerHTML = placeholder('The answer from the fine-tuned model appears here.');
+            rubricDetails.innerHTML = '<div class="text-gray-500">Length and structure of both answers will appear here after a run.</div>';
+            $('base-latency').textContent = $('juptter-latency').textContent = '—';
+            $('base-tokens').textContent = $('juptter-tokens').textContent = '—';
+            checkHealth();
+        });
+    </script>
+</body>
+</html>
