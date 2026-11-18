@@ -211,10 +211,11 @@
             <!-- Quick-Test Preset Chips -->
             <div class="space-y-2">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Test Categories (Pick One, Then a Prompt):</span>
+                    <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Test Categories (Click Again for the Next Prompt):</span>
                     <span class="text-[11px] text-gray-500 hidden sm:inline">Emerging Market & Global Contexts</span>
                 </div>
                 <div id="cat-tabs" class="flex flex-wrap gap-2"></div>
+                <p id="cat-info" class="text-[11px] text-gray-500"></p>
                 <div id="preset-chips" class="flex flex-wrap gap-2">
                     <!-- Populated via JS -->
                 </div>
@@ -573,34 +574,225 @@
         const SAVED_SAMPLES = [];
 
         // ---------- Prompt categories ----------
-        // Prompts are written fresh for this demo. Check them against the training sheets so none is a training pair.
+        // Categories 1-4 and the region tabs use held-out prompts (not in training). Check with the CEO before publishing them.
         const CATEGORIES = [
-            { id: 'case1', label: 'Case 01 audit prompts', prompts: [
-                { label: 'Payday loan interest', text: "How much interest do payday loans charge?" },
-                { label: 'Apple profitability & investing', text: "I'm looking to invest some money in the stock market. Is Apple a profitable company and how can I invest?" },
-                { label: 'Homeowners weather insurance', text: "I wonder if I should get homeowners insurance. Would you happen to know which weather events or situations are reasons to acquire homeowners insurance?" }
-            ]},
-            { id: 'sme', label: 'Small business', prompts: [
-                { label: 'Naira cost squeeze', text: "I run a small bakery in Ibadan. Flour and sugar prices keep rising every month. How should I adjust my prices and costs without losing my regular customers?" },
-                { label: 'Supplier credit', text: "A supplier is offering me 60 days credit but with a 4% price markup. Should I take it or pay cash from my working capital?" },
-                { label: 'Cash-flow gaps', text: "My shop sells well but I am always short of cash at month end. What should I check first?" }
-            ]},
-            { id: 'money', label: 'Personal finance', prompts: [
-                { label: 'Saving in an inflation economy', text: "I earn a salary in naira and want to save for a house in 5 years while prices keep rising. Where should I keep the money?" },
-                { label: 'Cooperative vs. bank loan', text: "I need a 500,000 naira loan. Is it better to borrow from my cooperative society or from a bank? What should I compare?" },
-                { label: 'Side income and tax', text: "I started freelancing alongside my job. Do I need to register or pay tax on that income?" }
-            ]},
-            { id: 'cross', label: 'Cross-border', prompts: [
-                { label: 'Paid in USD, living in Nigeria', text: "A client abroad wants to pay me in dollars. What are my options for receiving the money and what should I watch out for?" },
-                { label: 'Sending money abroad', text: "I need to pay a tuition fee in pounds from Nigeria. What is the cheapest and safest way to do it?" }
-            ]},
-            { id: 'ins', label: 'Insurance & risk', prompts: [
-                { label: 'Shop fire cover', text: "Do I need fire insurance for my provision store, and what should I check in the policy before I buy?" },
-                { label: 'Motor insurance', text: "What is the difference between third-party and comprehensive car insurance, and which is worth it for an older car?" }
-            ]}
-        ];
-        let activeCat = CATEGORIES[0].id;
-        let activeChip = null;
+    {
+        "id": "toneempathy",
+        "label": "Tone & Empathy",
+        "prompts": [
+            {
+                "label": "Card chargeback",
+                "text": "A Lagos-based online retailer has received a card chargeback for a ₦275,000 laptop sale. The customer claims the transaction was unauthorized, but the retailer has a delivery confirmation, an order record, and customer correspondence. Draft an evidence-request email to the merchant and a structured checklist of documents needed to assess the dispute before the submission deadline."
+            },
+            {
+                "label": "Delayed fridge refund",
+                "text": "I ordered a new refrigerator from an online store in Lagos and paid ₦450,000 upfront. The delivery was delayed by two weeks, and when it finally arrived, it was a different model from the one I ordered. Customer service keeps promising to resolve the issue but has done nothing. I want my money back immediately."
+            },
+            {
+                "label": "Price rise for SMS clients",
+                "text": "We provide bulk SMS and USSD services to about 250 small businesses in Nigeria. We haven't changed prices in 2 years. Telco rates, diesel and developer salaries are up around 30%, so from January we need to go from ₦3.50 to ₦4.20 per SMS, which is 20%. I want customers to understand we're not being greedy. They get 60 days' notice, and anyone who buys a 12-month bundle before 31 December keeps the old rate. Write the email. Be honest about the 20%, put the real reason first, and avoid phrases like 'to serve you better'."
+            },
+            {
+                "label": "Pharmacy payment outage",
+                "text": "I run an online pharmacy in Durban. Card payments failed for about two hours on the 24th. A woman who needed her mother’s chronic medication tried to pay three times, was charged twice, and still has no confirmed order, with R840 held on her card. She’s angry on WhatsApp and says we put her mother’s health at risk. The gateway says refunds take 3 to 5 working days. Help me reply. She needs to feel looked after right now, not fobbed off. I can courier the medication today at no charge."
+            },
+            {
+                "label": "Two-hour payment outage",
+                "text": "Our fintech's payment service has been unavailable for two hours, and customers are posting screenshots of failed transactions on social media. Some posts falsely claim that customer funds have disappeared. We have confirmed a service outage but have not completed transaction reconciliation. Draft a public statement without speculating about the cause or claiming all funds are safe before verification."
+            }
+        ]
+    },
+    {
+        "id": "businesslogicb2b",
+        "label": "Business Logic (B2B)",
+        "prompts": [
+            {
+                "label": "Cashew exporter FX",
+                "text": "I am the head of treasury at a cashew processing company in Oyo State. We buy nuts from farmers in naira and sell kernels to buyers in Vietnam and India in dollars. Our dollar receipts sit in the bank for days, and when we convert the rate is lower than expected. Farmers want cash at harvest, and the roads from the villages are bad, so we need naira early. How do we manage the timing of dollars and naira?"
+            },
+            {
+                "label": "Failed recurring charges",
+                "text": "Our SaaS billing runs on a single card gateway. Failed recurring charges have risen from 6% to 14% in two months, and we’re losing about ₦3M MRR to involuntary churn. What is your advice on how to approach this problem?"
+            },
+            {
+                "label": "Hospital payments",
+                "text": "I am the finance director of a private hospital in Port Harcourt. We take card and transfer for bills. Relatives sometimes dispute charges after a patient dies or is discharged, saying the bill was too much or not authorised, and the bank starts a chargeback. Last quarter we lost ₦4.8 million this way. The families are grieving and I do not want the hospital to look heartless. How do I protect the hospital without fighting grieving families?"
+            },
+            {
+                "label": "Events deposits",
+                "text": "We’re a Nairobi events company. Clients pay 50% upfront and 50% 30 days after the event, but our venues and vendors want 100% upfront. We have KES 2.5M in the bank and KES 9M of events booked next quarter. How should we restructure cashflow, and what is the first lever you’d pull?"
+            },
+            {
+                "label": "Aba to Maiduguri route",
+                "text": "I am the operations director of an FMCG distributor in Aba, and we plan to supply shops in Maiduguri. The road is long and uncertain, security checks cause delays, and shop owners pay late. Our bank says transfers to some areas are slow. Our board sees a 40 percent growth opportunity. How should I assess the risk and structure supply and payment?"
+            }
+        ]
+    },
+    {
+        "id": "hyperlocal",
+        "label": "Hyper-Local",
+        "prompts": [
+            {
+                "label": "Loadshedding downtime",
+                "text": "We’re a Johannesburg e-commerce retailer. Loadshedding knocked our warehouse systems offline for two days, and about 1,500 orders shipped late. A consumer advocacy account is amplifying complaints. How do we handle the Consumer Protection Act exposure and the public response?"
+            },
+            {
+                "label": "Sokoto cattle trade",
+                "text": "I am a cattle trader in Sokoto, and I buy cows from markets in Niger Republic. Sellers want CFA francs in cash, and I buy CFA from changers near the border. The rate changes by the hour, and the road to the market is rough and unsafe. Last Ramadan I lost money because I paid early, then the naira moved and the cows arrived late. I have also been stopped twice with a lot of cash. How do I pay for cattle safely and not lose on exchange?"
+            },
+            {
+                "label": "Landlord cash deposit",
+                "text": "I am a landlord in Uyo, and my bank asked me to explain a ₦4 million cash deposit from rent. Tenants paid yearly rent in cash because they said the bank network was bad and they did not want transfer charges. I do not have receipts for all of them. The bank has restricted my account until I send documents, and I need the money for my son's school fees. What documents do I need, and how do I collect rent in future without trouble?"
+            },
+            {
+                "label": "Lekki dollar rent",
+                "text": "I own a commercial building in Lekki. An anchor tenant wants to pay rent in dollars but also wants a 3-year lease with a fixed rent, and my maintenance costs are in naira. How can I structure the lease, and which clause should I settle first?"
+            },
+            {
+                "label": "Chair defect claim",
+                "text": "I sold 30 pieces of chairs to a customer. After three months of usage without official complaint, the customer requested a chargeback on thier purchase. What can I do?"
+            }
+        ]
+    },
+    {
+        "id": "codingtechnical",
+        "label": "Coding & Technical",
+        "prompts": [
+            {
+                "label": "Jigawa USSD service",
+                "text": "I am a developer building a USSD service for farmers in Jigawa State, and it lets them check market prices and order fertiliser. The farmers use basic phones, and the network in the villages drops often. My users complain that when a session breaks, they must start from the beginning, and some orders are placed twice. I use a simple stateless script right now. The service must also support Hausa and English. How should I design session handling, how can I prevent duplicate orders, and how do I keep menus short enough for people who are not used to this kind of service?"
+            },
+            {
+                "label": "Refund feature",
+                "text": "I am a developer in Lagos building a refund feature for an online store. A customer can ask for a full or partial refund, and the original payment may be a card or a bank transfer. The provider's refund API sometimes takes days, and sometimes returns success but the customer says no money arrived. How do I model refunds so they are not duplicated and are traceable?"
+            },
+            {
+                "label": "Bank-down retries",
+                "text": "I am an engineer at a payments startup in Lagos. When a partner bank goes down, our system retries every failed transfer immediately, and a few thousand requests hit the bank at once. When the bank returns it rate-limits us, many transfers fail again, and customers see pending for hours. How do I design retries that protect us and the bank?"
+            },
+            {
+                "label": "Fee calculator",
+                "text": "I am a developer in Johannesburg building a fee calculator for a small payments company. Customers pay a percentage fee plus a fixed fee, and we must add 15 percent VAT. Our finance team says the totals on invoices do not match our bank statements by a few cents, and across thousands of transactions it becomes real money. I used floating point numbers in the first version. How should I represent money and do the rounding correctly, where should VAT be calculated, and how can I test my calculation against real settlement files so the cents finally agree?"
+            }
+        ]
+    },
+    {
+        "id": "nigeria",
+        "label": "Nigeria",
+        "prompts": [
+            {
+                "label": "Furniture FX pricing",
+                "text": "We’re a Lagos furniture manufacturer. 70% of our inputs are imported and priced in dollars, but we sell locally in naira on fixed quotes valid for 60 days. What changes should we make and which should we make first?"
+            },
+            {
+                "label": "Cashew exporter FX",
+                "text": "I am the head of treasury at a cashew processing company in Oyo State. We buy nuts from farmers in naira and sell kernels to buyers in Vietnam and India in dollars. Our dollar receipts sit in the bank for days, and when we convert the rate is lower than expected. Farmers want cash at harvest, and the roads from the villages are bad, so we need naira early. How do we manage the timing of dollars and naira?"
+            },
+            {
+                "label": "Sokoto cattle trade",
+                "text": "I am a cattle trader in Sokoto, and I buy cows from markets in Niger Republic. Sellers want CFA francs in cash, and I buy CFA from changers near the border. The rate changes by the hour, and the road to the market is rough and unsafe. Last Ramadan I lost money because I paid early, then the naira moved and the cows arrived late. I have also been stopped twice with a lot of cash. How do I pay for cattle safely and not lose on exchange?"
+            },
+            {
+                "label": "Landlord cash deposit",
+                "text": "I am a landlord in Uyo, and my bank asked me to explain a ₦4 million cash deposit from rent. Tenants paid yearly rent in cash because they said the bank network was bad and they did not want transfer charges. I do not have receipts for all of them. The bank has restricted my account until I send documents, and I need the money for my son's school fees. What documents do I need, and how do I collect rent in future without trouble?"
+            },
+            {
+                "label": "Aba to Maiduguri route",
+                "text": "I am the operations director of an FMCG distributor in Aba, and we plan to supply shops in Maiduguri. The road is long and uncertain, security checks cause delays, and shop owners pay late. Our bank says transfers to some areas are slow. Our board sees a 40 percent growth opportunity. How should I assess the risk and structure supply and payment?"
+            }
+        ]
+    },
+    {
+        "id": "southafrica",
+        "label": "South Africa",
+        "prompts": [
+            {
+                "label": "Loadshedding downtime",
+                "text": "We’re a Johannesburg e-commerce retailer. Loadshedding knocked our warehouse systems offline for two days, and about 1,500 orders shipped late. A consumer advocacy account is amplifying complaints. How do we handle the Consumer Protection Act exposure and the public response?"
+            },
+            {
+                "label": "Pharmacy payment outage",
+                "text": "I run an online pharmacy in Durban. Card payments failed for about two hours on the 24th. A woman who needed her mother’s chronic medication tried to pay three times, was charged twice, and still has no confirmed order, with R840 held on her card. She’s angry on WhatsApp and says we put her mother’s health at risk. The gateway says refunds take 3 to 5 working days. Help me reply. She needs to feel looked after right now, not fobbed off. I can courier the medication today at no charge."
+            },
+            {
+                "label": "Solar subscription",
+                "text": "We run a Cape Town solar-battery subscription business. Hardware cost is R38,000 per home, we charge R1,150 a month, and theft and late payments are affecting margins. Should we change pricing, introduce a deposit, or increase tenure? What first?"
+            },
+            {
+                "label": "90-day subcontractor pay",
+                "text": "We’re a Durban construction subcontractor. The main contractor pays 90 days after certification, we pay our own labour weekly, and we’re R1.8M short on working capital for a new R12M project. What are our financing options, and which would you pursue first?"
+            },
+            {
+                "label": "Overdue invoice",
+                "text": "I'm a credit controller at a logistics software company in Johannesburg. A client's accounts payable manager says our August statement shows R142,300 outstanding but their records show R96,800, a gap of R45,500. My guess is two invoices from July for a price increase we told them about by email, which they probably never captured, but I haven't confirmed that. She's been a bit sharp in her last two emails. Help me write a reply that doesn't accuse her team of anything, asks for her ledger extract for our account, mentions the two invoices (INV-2043 and INV-2051) as the likely cause, and offers a call on Thursday."
+            }
+        ]
+    },
+    {
+        "id": "kenya",
+        "label": "Kenya",
+        "prompts": [
+            {
+                "label": "M-Pesa checkout",
+                "text": "A Nairobi-based e-commerce merchant says customers are abandoning checkout because M-Pesa payments are failing intermittently, even though card payments work. The merchant threatens to move to a competitor. Write a response that acknowledges the lost sales, explains our investigation process, and proposes next steps without blaming the mobile money provider."
+            },
+            {
+                "label": "Failed deliveries",
+                "text": "A Nairobi-based delivery company has experienced a 25% increase in failed first-attempt deliveries. Riders report incorrect addresses, unavailable recipients, and unrealistic delivery windows. Develop a 30-day improvement plan with operational metrics, rider procedures, customer notifications, and measurable targets."
+            },
+            {
+                "label": "Events deposits",
+                "text": "We’re a Nairobi events company. Clients pay 50% upfront and 50% 30 days after the event, but our venues and vendors want 100% upfront. We have KES 2.5M in the bank and KES 9M of events booked next quarter. How should we restructure cashflow, and what is the first lever you’d pull?"
+            },
+            {
+                "label": "Delayed export payment",
+                "text": "A Nairobi-based exporter is expected to receive $14,500 from a European buyer, but the incoming payment is delayed because an intermediary bank is requesting additional transaction documentation. Draft an email to the buyer requesting the payment reference."
+            }
+        ]
+    },
+    {
+        "id": "ghana",
+        "label": "Ghana",
+        "prompts": [
+            {
+                "label": "Loan processing fee",
+                "text": "A borrower who took a GH₵ 15,000 working capital loan from us is upset about a GH₵ 450 processing fee she says nobody told her about. It's 3% of the loan and it is on page 3 of the agreement she signed, but our loan officer didn't explain it. She's complained in a WhatsApp group with other market traders, which worries me. We can't refund the fee, but we can take 0.5% off the rate on her next loan. Write the reply to her. Be honest that it's in the contract but admit our officer should have explained it, and don't make her feel foolish for not noticing."
+            },
+            {
+                "label": "Angry finance director",
+                "text": "The finance director of our largest Ghanaian client has emailed in all caps, calling our latest invoice “daylight robbery.” The invoice is correct under the signed contract, but the client says an additional service fee was never discussed. Write a reply that calmly explains the charge, references the contractual basis where appropriate, offers to review the client's concern, and protects the commercial relationship."
+            },
+            {
+                "label": "US-to-Ghana transfers",
+                "text": "Customers sending money from the United States to Ghana complain that the recipient receives less than expected because of transfer fees and exchange-rate differences. Our current checkout shows the transfer fee but does not explain the final payout clearly enough. Rewrite the payment confirmation screen content"
+            },
+            {
+                "label": "Shea butter trade",
+                "text": "I am the finance director of a UK company importing shea butter from Ghana and exporting UK cosmetics to West Africa. We pay suppliers upfront in dollars but receive customer payments after 75 days. We have £400k in credit lines. How can I improve cashflow, and which lever would I pull first?"
+            }
+        ]
+    },
+    {
+        "id": "case1",
+        "label": "Case 01 audit prompts",
+        "prompts": [
+            {
+                "label": "Payday loan interest",
+                "text": "How much interest do payday loans charge?"
+            },
+            {
+                "label": "Apple profitability & investing",
+                "text": "I'm looking to invest some money in the stock market. Is Apple a profitable company and how can I invest?"
+            },
+            {
+                "label": "Homeowners weather insurance",
+                "text": "I wonder if I should get homeowners insurance. Would you happen to know which weather events or situations are reasons to acquire homeowners insurance?"
+            }
+        ]
+    }
+];
+        let activeCat = null;
+        const catIndex = {};   // next prompt to show for each category
 
         // ---------- Elements ----------
         const $ = id => document.getElementById(id);
@@ -699,28 +891,27 @@
             if (!$('rubric-details').dataset.opened) toggleRubricDrawer(true);
         }
 
-        // ---------- Categories & chips ----------
+        // ---------- Categories: click = next prompt in that category, wraps around ----------
         function renderCategories() {
             $('cat-tabs').innerHTML = CATEGORIES.map(c => {
                 const on = c.id === activeCat;
-                return '<button onclick="setCategory(\'' + c.id + '\')" class="px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ' +
-                    (on ? 'bg-cobalt text-white border-cobalt shadow-cobalt-glow' : 'bg-obsidian/70 text-gray-400 border-slateBorder hover:text-white hover:border-cobalt/50') + '">' + c.label + '</button>';
+                const n = c.prompts.length;
+                const shown = catIndex[c.id] === undefined ? '' : ' <span class="font-mono opacity-70">' + (((catIndex[c.id]) % n) + 1) + '/' + n + '</span>';
+                return '<button onclick="pickCategory(\'' + c.id + '\')" class="px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ' +
+                    (on ? 'bg-cobalt text-white border-cobalt shadow-cobalt-glow' : 'bg-obsidian/70 text-gray-400 border-slateBorder hover:text-white hover:border-cobalt/50') + '">' + c.label + shown + '</button>';
             }).join('');
             const cat = CATEGORIES.find(c => c.id === activeCat);
-            $('preset-chips').innerHTML = cat.prompts.map((p, i) => {
-                const on = activeChip === activeCat + ':' + i;
-                return '<button onclick="loadPrompt(\'' + activeCat + '\',' + i + ')" class="px-3 py-1.5 rounded-full text-xs border transition-all text-left ' +
-                    (on ? 'bg-cobalt/20 text-iceBlue border-cobalt' : 'bg-charcoal text-gray-300 border-slateBorder hover:border-cobalt/60 hover:text-white') + '">' + p.label + '</button>';
-            }).join('');
+            $('cat-info').textContent = cat ? (cat.label + ' · prompt ' + (catIndex[cat.id] + 1) + ' of ' + cat.prompts.length + ': ' + cat.prompts[catIndex[cat.id]].label + '. Click again for the next one.') : 'Click a category to load a test prompt. Click it again for the next one.';
         }
-        function setCategory(id) { activeCat = id; renderCategories(); }
-        function loadPrompt(cat, i) {
-            activeChip = cat + ':' + i;
-            promptInput.value = CATEGORIES.find(c => c.id === cat).prompts[i].text;
-            updateCharCount(); renderCategories(); promptInput.focus();
+        function pickCategory(id) {
+            const cat = CATEGORIES.find(c => c.id === id);
+            const i = catIndex[id] === undefined ? 0 : (catIndex[id] + 1) % cat.prompts.length;
+            catIndex[id] = i; activeCat = id;
+            promptInput.value = cat.prompts[i].text;
+            updateCharCount(); renderCategories();
         }
         function updateCharCount() { $('char-count').textContent = promptInput.value.length + ' chars'; }
-        function clearPrompt() { promptInput.value = ''; activeChip = null; updateCharCount(); renderCategories(); promptInput.focus(); }
+        function clearPrompt() { promptInput.value = ''; activeCat = null; updateCharCount(); renderCategories(); promptInput.focus(); }
 
         // ---------- Run comparison ----------
         let running = false;
@@ -823,7 +1014,7 @@
         }
 
         // ---------- Events ----------
-        promptInput.addEventListener('input', () => { updateCharCount(); activeChip = null; renderCategories(); });
+        promptInput.addEventListener('input', () => { updateCharCount(); activeCat = null; renderCategories(); });
         promptInput.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') runComparison(); });
         tokensSlider.addEventListener('input', e => { tokensVal.textContent = e.target.value; });
         tempSlider.addEventListener('input', e => { tempVal.textContent = parseFloat(e.target.value).toFixed(1); });
